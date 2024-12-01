@@ -31,42 +31,52 @@ def subMenu2():
 def subMenu3(opc):
     if opc == 1:
         return int(input("***** ACTUALIZAR *****\n"+\
-            "1. Modificar RUT \n"                     +\
-            "2. Modificar Nombre\n"         +\
-            "3. Modificar Pais\n"         +\
+            "1. Modificar Nombre\n"+\
+            "2. Modificar Pais\n"+\
             "opcion: "))
     elif opc == 2:
         return int(input("***** ACTUALIZAR *****\n"+\
-            "1. Modificar Numero de telefono \n"                     +\
-            "2. Modificar Duracion\n"         +\
-            "3. Modificar Fecha\n"         +\
-            "4. Modificar Id Foreign Key\n"     +\
+            "1. Modificar Numero de telefono \n"+\
+            "2. Modificar Duracion\n"+\
+            "3. Modificar Fecha\n"+\
+            "4. Modificar Id Foreign Key\n"+\
             "opcion: "))
         
-
-
 #FUNCIONES PARA EL CRUD
 def agregarCliente():
-    nombre  = input("Ingrese Nombre y Apellido para el nuevo cliente: ").title()
-    pais    = input("Ingrese Pais para el nuevo cliente: ").title()
-    return([nombre,pais])
+    while True:
+        nombre = input("Ingrese Nombre del cliente: ").upper().strip()
+        if nombre:
+            break
+    while True:
+            apellido = input("Ingrese Apellido del cliente: ").upper().strip()
+            if apellido:
+                break
+    nombreCompleto = nombre + " " + apellido
+        
+    while True:
+        pais = input("Ingrese Pais para el nuevo cliente: ").upper().strip()
+        if pais:
+                break
+    return([nombreCompleto ,pais])
 
 def agregarTelefono(cliente_id):
     print("\n----------------------------------------------------------------------------")
     print("***************************** REGISTRAR LLAMADA *****************************")
     print("-----------------------------------------------------------------------------")
     while True:
-        numero = input("REGISTRAR NUMERO CELULAR(+569XXXXXXXX): ")
-        if len(numero)<=7:
-            print("\n-----------------------------------------------------------------------------")
-            print("El numero ingresado como minimo debe ser mayor a 7 digitos")
-            print("-----------------------------------------------------------------------------\n")
-        elif len(numero)>=16:
-            print("\n-----------------------------------------------------------------------------")
-            print("El numero excede el limite de largo, debe ser menor a 17 digitos")
-            print("-----------------------------------------------------------------------------\n")
-        else:
-            break
+        numero = input("REGISTRAR NUMERO CELULAR(+569XXXXXXXX): ").strip()
+        if numero:
+            if len(numero)<=7:
+                print("\n-----------------------------------------------------------------------------")
+                print("El numero ingresado como minimo debe ser mayor a 7 digitos")
+                print("-----------------------------------------------------------------------------\n")
+            elif len(numero)>=16:
+                print("\n-----------------------------------------------------------------------------")
+                print("El numero excede el limite de largo, debe ser menor a 17 digitos")
+                print("-----------------------------------------------------------------------------\n")
+            else:
+                break
     while True:
         try:
             duracion    = int(input("REGISTRAR DURACION DE LA LLAMADA (MIN): "))
@@ -128,8 +138,98 @@ def agregarTelefono(cliente_id):
     fecha = f"{dd}/{mm}/{yyyy}"
     return([numero,duracion,fecha,cliente_id])
 
-def leerID():
-    return int(input("Ingresar el ID del cliente que desa eliminar: "))
+def nuevoDato(mod,opc):
+    if opc == 1:
+        match mod:
+            case 1:
+                while True:
+                    nombre = input("Ingrese Nombre del cliente: ").upper().strip()
+                    if nombre:
+                        break
+                return nombre
+            case 2:
+                while True:
+                    pais = input("Ingrese Pais para el nuevo cliente: ").upper().strip()
+                    if pais:
+                        break   
+    elif opc == 2:
+        match mod:
+            case 1:
+                while True:
+                    numero = input("REGISTRAR NUEVO NUMERO CELULAR(+569XXXXXXXX): ").upper().strip()
+                    if len(numero)<=7:
+                        print("\n-----------------------------------------------------------------------------")
+                        print("El numero ingresado como minimo debe ser mayor a 7 digitos")
+                        print("-----------------------------------------------------------------------------\n")
+                    elif len(numero)>=16:
+                        print("\n-----------------------------------------------------------------------------")
+                        print("El numero excede el limite de largo, debe ser menor a 17 digitos")
+                        print("-----------------------------------------------------------------------------\n")
+                    else:
+                        break
+                return numero
+            case 2:
+                try:
+                    while True:
+                        duracion    = int(input("NUEVA DURACION DE LA LLAMADA(MIN): "))
+                        if duracion >= 0:
+                            break
+                        else:
+                            print("\n-----------------------------------------------------------------------------")
+                            print("El numero ingresado no puede ser -1 o inferior\n")
+                            print("-----------------------------------------------------------------------------\n")
+                            break
+                except:
+                    print("\n-----------------------------------------------------------------------------")
+                    print("Caracter ingresado invalido")
+                    print("-----------------------------------------------------------------------------\n")
+                return duracion
+            case 3:
+                while True:
+                    try:
+                        dd = int(input("INGRESAR DIA (dd): "))   
+                        if dd <= 31 and dd > 0:
+                            break
+                        else:
+                            print("\n-----------------------------------------------------------------------------")
+                            print("Ingresar valor dentro del rango(1-31)\n")
+                            print("-----------------------------------------------------------------------------\n") 
+                    except:
+                        print("\n-----------------------------------------------------------------------------")
+                        print("Volver a intentar caracter invalido")
+                        print("-----------------------------------------------------------------------------\n")     
+                while True:
+                    try: 
+                        mm = int(input("INGRESAR MES (mm): ")) 
+                        if mm <= 12 and mm > 0: 
+                            break
+                        else:
+                            print("\n-----------------------------------------------------------------------------")
+                            print("Ingresar valor dentro del rango(1-12)\n")
+                            print("-----------------------------------------------------------------------------\n")
+                    except:
+                        print("\n-----------------------------------------------------------------------------")
+                        print("Volver a intentar caracter invalido")
+                        print("-----------------------------------------------------------------------------\n") 
+                while True:
+                    try:
+                        yyyy = int(input("INGRESAR AÑO (yyyy): ")) 
+                        if yyyy < 2025: 
+                            break
+                        else:
+                            print("\n-----------------------------------------------------------------------------")
+                            print("Fuera del limite (menor o igual a 2024)\n")
+                            print("-----------------------------------------------------------------------------\n")
+                    except:
+                        print("\n-----------------------------------------------------------------------------")
+                        print("Volver a intentar caracter invalido")
+                        print("-----------------------------------------------------------------------------\n") 
+
+                fecha= f"{dd}/{mm}/{yyyy}"
+                return fecha              
+            
+            case 4:
+                return input("Ingresa el nuevo Id Foraneo")
 
 def leerRut():
     while True:
@@ -137,26 +237,6 @@ def leerRut():
         if  rut != None:
             break
     return rut
-
-def nuevoDato(mod,opc):
-    if opc == 1:
-        match mod:
-            case 1: 
-                pass
-            case 2:
-                return input("Ingresa el nuevo nombre del cliente: ")
-            case 3:
-                return input("Ingresa el nuevo pais de telefono: ")
-    elif opc == 2:
-        match mod:
-            case 1:
-                return input("Ingresa el nuevo numero de telefono: ")
-            case 2:
-                return input("Ingresa la nueva duracion de la llamada: ")
-            case 3:
-                return input("Ingresa la nueva fecha de la llamada: ")
-            case 4:
-                return input("Ingresa el nuevo Id Foraneo")
 
 def validacionRut(rut):
     lista = ['1','2','3','4','5','6','7','8','9','0','K','-']

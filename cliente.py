@@ -73,15 +73,12 @@ class Cliente(Conexion):
                     match opc:
                         case 1:
                             idCliente = self.buscarCliente(fun.leerRut())
-                            mod = fun.subMenu3()
-                            match mod:
-                                case 1:
-                                    listaUP =[fun.leerRut(),idCliente[0]]
-                                    cursor.execute("UPDATE cliente SET rut = %s WHERE id = %s",listaUP)   
-                                case 2: 
+                            mod = fun.subMenu3(opc)
+                            match mod:  
+                                case 1: 
                                     listaNom = [fun.nuevoDato(mod,opc),idCliente[0]]
                                     cursor.execute("UPDATE cliente SET nombre = %s WHERE id= %s", listaNom)
-                                case 3:
+                                case 2:
                                     listaPai = [fun.nuevoDato(mod,opc),idCliente[0]]
                                     cursor.execute("UPDATE cliente SET pais = %s WHERE id= %s", listaPai)
                         case 2:
@@ -179,7 +176,6 @@ class Cliente(Conexion):
         except Error as ex:
                 print("Error de conexión: {0} ".format(ex))   
         
-
 #FUNCIONES EXTRA
     def buscarCliente(self,rut):
         listRut=[rut]
@@ -199,7 +195,6 @@ class Cliente(Conexion):
         if self.conexion.is_connected():
             print("\nConexion a la base de datos EXITOSA!...")
             return True
-
 
 #CONSULTAS
     def buscarLlamada(self): 
@@ -239,7 +234,3 @@ class Cliente(Conexion):
                             print("Respuesta es SI o NO")
             except Error as ex:
                 print("Error de conexión: {0} ".format(ex))
-
-    def prueba(self):
-        rut = fun.leerRut()
-        print(self.buscarCliente(rut))
