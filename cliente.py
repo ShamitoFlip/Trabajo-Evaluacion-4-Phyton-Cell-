@@ -196,7 +196,7 @@ class Cliente(Conexion):
             return True
 
 #CONSULTAS
-    def buscarLllamadas(self): #Error UNREAD RESULT FOUND
+    def buscarLlamadas(self): #Error UNREAD RESULT FOUND
         if self.conexion.is_connected():
             try:
                 while True:
