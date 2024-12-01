@@ -50,12 +50,11 @@ class Cliente(Conexion):
             if self.conexion.is_connected():
                 try:
                     opc = fun.subMenu2()
-                    cursor = self.conexion.cursor()
+                    cursor = self.conexion.cursor() 
                     match opc:
                         case 1:
-                            rut = fun.leerRut()
-                            idCliente=[self.buscarCliente(rut)[0]]
-                            cursor.execute("DELETE FROM telefono WHERE id_cliente = %s", idCliente)
+                            idCliente=[self.buscarCliente(fun.leerRut())[0]]
+                            cursor.execute("DELETE FROM telefono WHERE id_cliente = %s", idCliente) 
                             cursor.execute("DELETE FROM cliente WHERE id = %s", idCliente)
                             self.conexion.commit()
                             print("Cliente eliminado exitosamente")
@@ -66,8 +65,49 @@ class Cliente(Conexion):
                 except Error as ex:
                     print("Error de conexión: {0} ".format(ex))
                     
-    def ModificarDatos(self): #AUN NO SE AVANZA
-        pass
+    def ModificarDatos(self): 
+            if self.conexion.is_connected():
+                try: 
+                    opc = fun.subMenu1()
+                    cursor = self.conexion.cursor()
+                    match opc:
+                        case 1:
+                            idCliente = self.buscarCliente(fun.leerRut())
+                            mod = fun.subMenu3(opc)
+                            match mod:  
+                                case 1: 
+                                    listaNom = [fun.nuevoDato(mod,opc),idCliente[0]]
+                                    cursor.execute("UPDATE cliente SET nombre = %s WHERE id= %s", listaNom)
+                                case 2:
+                                    listaPai = [fun.nuevoDato(mod,opc),idCliente[0]]
+                                    cursor.execute("UPDATE cliente SET pais = %s WHERE id= %s", listaPai)
+                        case 2:
+                            idCliente = self.buscarCliente(fun.leerRut())
+                            mod = fun.subMenu3(opc)
+                            match mod:
+                                case 1:
+                                    listNum = [fun.nuevoDato(mod,opc),idCliente[0]]
+                                    cursor.execute("UPDATE telefono SET numero = %s where id = %s", listNum)
+                                case 2:
+                                    listaDur = [fun.nuevoDato(mod,opc),idCliente[0]]
+                                    cursor.execute("UPDATE telefono SET duracion = %s where id = %s", listaDur)
+                                case 3:
+                                    listaFech = [fun.nuevoDato(mod,opc),idCliente[0]]
+                                    cursor.execute("UPDATE telefono SET fecha = %s where id = %s", listaFech)
+                                case 4:
+                                    listaIdFk = [fun.nuevoDato(mod,opc),idCliente[0]]
+                                    cursor.execute("UPDATE telefono SET id_cliente = %s where id = %s", listaIdFk)
+
+
+
+                    self.conexion.commit()
+                    print("Los datos del cliente se han actualizado correctamente")
+                    
+
+                except Error as ex:
+                    print("Error al actualizar datos: {0} ".format(ex))
+                    
+
         #El usuario debe poder seleccionar el atributo a modifcar ya sea de la tabla cliente o de la tabla telefono
         #Se puede crear un menu para seleccionar que tabla modificar 
         #y un submenu que con los atributos a modificar (cliente(rut,nombre y pais) y en telefono(numero, duracion y fecha))
@@ -136,52 +176,13 @@ class Cliente(Conexion):
         except Error as ex:
                 print("Error de conexión: {0} ".format(ex))   
         
-    def leerUno(self): #Error UNREAD RESULT FOUND
-        if self.conexion.is_connected():
-            try:
-                while True:
-                    cursor=self.conexion.cursor()
-                    rut = fun.leerRut()
-                    buscarCliente = self.buscarCliente(rut)
-                    idCliente = [buscarCliente[0]]
-                    if  buscarCliente is not None: #reparar unread data
-                        print("Cliente encontrado")  
-
-                        cursor.execute("SELECT tf.id, tf.numero,tf.duracion,tf.fecha,tf.id_cliente FROM telefono AS tf INNER JOIN cliente AS cl ON tf.id_cliente = cl.id WHERE tf.id_cliente = %s  ORDER BY tf.id",idCliente)
-                        resultado = cursor.fetchall()
-                        c=1
-                        print("--------------------------------------------")
-                        print("**** EL RESULTADO DE LA BUSQUEDA ES: ****")
-                        print("--------------------------------------------")
-                        print("--------------------------------------------------------------------------------------------------------------------------------------------------")
-                        
-                        print(f"{c}.","ID:",buscarCliente[0],"|RUT:", buscarCliente[1],"|NOMBRE:",buscarCliente[2],"|PAIS:",buscarCliente[3])
-                        for fila in resultado:
-                            print(f"\t-.","ID:",fila[0],"|NUMERO CELULAR:", fila[1],"|DURACION:",fila[2],"MIN |FECHA:",fila[3],"MIN |ID_CLIENTE:",fila[4])
-                        
-                        print("--------------------------------------------------------------------------------------------------------------------------------------------------")
-                        print("")
-                        break
-                    else:
-                        print("Rut no esta en BD")
-                        resp = input("DESEA INTENTAR DE NUEVO [SI O NO]").title()
-                        if resp == "No":
-                            break
-                        elif resp == "Si":
-                            print("Ingresa nuevamenter el rut")
-                        else:
-                            print("Respuesta es SI o NO")
-            except Error as ex:
-                print("Error de conexión: {0} ".format(ex))
-
 #FUNCIONES EXTRA
     def buscarCliente(self,rut):
         listRut=[rut]
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                query = ("SELECT * FROM cliente WHERE rut = %s")
-                cursor.execute(query,listRut )
+                cursor.execute("SELECT * FROM cliente WHERE rut = %s",listRut)
                 resultado = cursor.fetchone()
                 cursor.close()
                 return resultado
@@ -196,7 +197,7 @@ class Cliente(Conexion):
             return True
 
 #CONSULTAS
-    def buscarLlamadas(self): #Error UNREAD RESULT FOUND
+    def buscarLlamada(self): 
         if self.conexion.is_connected():
             try:
                 while True:

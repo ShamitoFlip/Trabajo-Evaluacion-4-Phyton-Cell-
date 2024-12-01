@@ -11,7 +11,7 @@ while True:
                     case 1:
                         cl.insertData()
                     case 2:
-                        pass
+                        cl.ModificarDatos()
                     case 3:
                         cl.leerTodo()
                     case 4:
@@ -23,12 +23,9 @@ while True:
                     case 7:
                         cl.cerrarConexion()
                         break
+                    case 8:
+                        f.fin()
                         
     else:
         print("\nCerrando programa")
         break
-    
-    
-    """
-   
-    """
