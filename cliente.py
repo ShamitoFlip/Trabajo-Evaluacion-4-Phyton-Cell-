@@ -14,13 +14,6 @@ class Cliente(Conexion):
                 buscarCliente = self.buscarCliente(rut) #(1,rut,nombre,pais))
                 if  buscarCliente is not None: #reparar unreal data
                     print("RUT YA REGISTRADO!!!")
-                    query  = "INSERT INTO telefono (numero,duracion,fecha,id_cliente) VALUES (%s,%s,%s,%s)"
-                    cursor.execute(query, fun.agregarTelefono(buscarCliente[0]))
-                    self.conexion.commit()
-                    print("----------------------------------------------------------------------------")
-                    print("NUEVO REGISTRO DE LLAMADA AGREGADO EXITOSAMENTE")
-                    print("----------------------------------------------------------------------------")
-                    cursor.close()
                     
                 elif buscarCliente == None:
                     print("\n----------------------------------------------------------------------------")
@@ -31,16 +24,17 @@ class Cliente(Conexion):
 
                     query  = "INSERT INTO cliente (rut,nombre,pais) VALUES (%s,%s,%s)"
                     cursor.execute(query, listaCliente)
-                    cliente_id = cursor.lastrowid
-                    
-                    query  = "INSERT INTO telefono (numero,duracion,fecha,id_cliente) VALUES (%s,%s,%s,%s)"
-                    cursor.execute(query, fun.agregarTelefono(cliente_id))
-                    self.conexion.commit()
-                    cursor.close()
+                    buscarCliente = [cursor.lastrowid]
                     print("----------------------------------------------------------------------------")
                     print("CLIENTE REGISTRADO CON EXITO")
                     print("----------------------------------------------------------------------------")
-                    
+                
+                query  = "INSERT INTO telefono (numero,duracion,fecha,id_cliente) VALUES (%s,%s,%s,%s)"
+                cursor.execute(query, fun.agregarTelefono(buscarCliente[0]))
+                self.conexion.commit()
+                cursor.close()
+                
+                
 
                 
         except Error as ex:
