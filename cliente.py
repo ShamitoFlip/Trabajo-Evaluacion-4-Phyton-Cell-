@@ -106,12 +106,6 @@ class Cliente(Conexion):
 
                 except Error as ex:
                     print("Error al actualizar datos: {0} ".format(ex))
-                    
-
-        #El usuario debe poder seleccionar el atributo a modifcar ya sea de la tabla cliente o de la tabla telefono
-        #Se puede crear un menu para seleccionar que tabla modificar 
-        #y un submenu que con los atributos a modificar (cliente(rut,nombre y pais) y en telefono(numero, duracion y fecha))
-        #Opcional para mejorar el nivel de detalle mostrar los datos antiguos y los nuevos que se modificaron o cambiaron
 
     def leerTodo(self): #Listoco
         try:
