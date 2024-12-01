@@ -1,6 +1,7 @@
 import funcion as fun
 from conexion import Conexion
 from mysql.connector import Error
+
 class Cliente(Conexion): 
     def __init__(self):
         super().__init__()      
@@ -14,13 +15,6 @@ class Cliente(Conexion):
                 buscarCliente = self.buscarCliente(rut) #(1,rut,nombre,pais))
                 if  buscarCliente is not None: #reparar unreal data
                     print("RUT YA REGISTRADO!!!")
-                    query  = "INSERT INTO telefono (numero,duracion,fecha,id_cliente) VALUES (%s,%s,%s,%s)"
-                    cursor.execute(query, fun.agregarTelefono(buscarCliente[0]))
-                    self.conexion.commit()
-                    print("----------------------------------------------------------------------------")
-                    print("NUEVO REGISTRO DE LLAMADA AGREGADO EXITOSAMENTE")
-                    print("----------------------------------------------------------------------------")
-                    cursor.close()
                     
                 elif buscarCliente == None:
                     print("\n----------------------------------------------------------------------------")
@@ -31,16 +25,17 @@ class Cliente(Conexion):
 
                     query  = "INSERT INTO cliente (rut,nombre,pais) VALUES (%s,%s,%s)"
                     cursor.execute(query, listaCliente)
-                    cliente_id = cursor.lastrowid
-                    
-                    query  = "INSERT INTO telefono (numero,duracion,fecha,id_cliente) VALUES (%s,%s,%s,%s)"
-                    cursor.execute(query, fun.agregarTelefono(cliente_id))
-                    self.conexion.commit()
-                    cursor.close()
+                    buscarCliente = [cursor.lastrowid]
                     print("----------------------------------------------------------------------------")
                     print("CLIENTE REGISTRADO CON EXITO")
                     print("----------------------------------------------------------------------------")
-                    
+                
+                query  = "INSERT INTO telefono (numero,duracion,fecha,id_cliente) VALUES (%s,%s,%s,%s)"
+                cursor.execute(query, fun.agregarTelefono(buscarCliente[0]))
+                self.conexion.commit()
+                cursor.close()
+                
+                
 
                 
         except Error as ex:
@@ -106,7 +101,7 @@ class Cliente(Conexion):
 
                 except Error as ex:
                     print("Error al actualizar datos: {0} ".format(ex))
-
+    
     def leerTodo(self): #Listoco
         try:
             opc = fun.subMenu2()
@@ -170,13 +165,52 @@ class Cliente(Conexion):
         except Error as ex:
                 print("Error de conexión: {0} ".format(ex))   
         
+    def leerUno(self): #Error UNREAD RESULT FOUND
+        if self.conexion.is_connected():
+            try:
+                while True:
+                    cursor=self.conexion.cursor()
+                    rut = fun.leerRut()
+                    buscarCliente = self.buscarCliente(rut)
+                    idCliente = [buscarCliente[0]]
+                    if  buscarCliente is not None: #reparar unread data
+                        print("Cliente encontrado")  
+
+                        cursor.execute("SELECT tf.id, tf.numero,tf.duracion,tf.fecha,tf.id_cliente FROM telefono AS tf INNER JOIN cliente AS cl ON tf.id_cliente = cl.id WHERE tf.id_cliente = %s  ORDER BY tf.id",idCliente)
+                        resultado = cursor.fetchall()
+                        c=1
+                        print("--------------------------------------------")
+                        print("**** EL RESULTADO DE LA BUSQUEDA ES: ****")
+                        print("--------------------------------------------")
+                        print("--------------------------------------------------------------------------------------------------------------------------------------------------")
+                        
+                        print(f"{c}.","ID:",buscarCliente[0],"|RUT:", buscarCliente[1],"|NOMBRE:",buscarCliente[2],"|PAIS:",buscarCliente[3])
+                        for fila in resultado:
+                            print(f"\t-.","ID:",fila[0],"|NUMERO CELULAR:", fila[1],"|DURACION:",fila[2],"MIN |FECHA:",fila[3],"MIN |ID_CLIENTE:",fila[4])
+                        
+                        print("--------------------------------------------------------------------------------------------------------------------------------------------------")
+                        print("")
+                        break
+                    else:
+                        print("Rut no esta en BD")
+                        resp = input("DESEA INTENTAR DE NUEVO [SI O NO]").title()
+                        if resp == "No":
+                            break
+                        elif resp == "Si":
+                            print("Ingresa nuevamenter el rut")
+                        else:
+                            print("Respuesta es SI o NO")
+            except Error as ex:
+                print("Error de conexión: {0} ".format(ex))
+
 #FUNCIONES EXTRA
     def buscarCliente(self,rut):
         listRut=[rut]
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                cursor.execute("SELECT * FROM cliente WHERE rut = %s",listRut)
+                query = ("SELECT * FROM cliente WHERE rut = %s")
+                cursor.execute(query,listRut )
                 resultado = cursor.fetchone()
                 cursor.close()
                 return resultado
@@ -191,7 +225,7 @@ class Cliente(Conexion):
             return True
 
 #CONSULTAS
-    def buscarLlamada(self): 
+    def buscarLlamadas(self): #Error UNREAD RESULT FOUND
         if self.conexion.is_connected():
             try:
                 while True:
