@@ -7,15 +7,6 @@ class Cliente(Conexion):
         super().__init__()      
 
 #CRUD
-import funcion as fun
-from conexion import Conexion
-from mysql.connector import Error
-
-class Cliente(Conexion): 
-    def __init__(self):
-        super().__init__()      
-
-#CRUD
     def insertData(self):#Se debe verificar el telefono que no se repita con otro cliente:D.
         try:
             if  self.conexion.is_connected():
@@ -62,8 +53,8 @@ class Cliente(Conexion):
                             rut=fun.leerRut()
                             encontrarRUT = self.buscarCliente(rut)
                             if encontrarRUT is not None:
-                                cursor.execute("DELETE FROM telefono WHERE id_cliente = %s", [rut]) 
-                                cursor.execute("DELETE FROM cliente WHERE id = %s", [rut])
+                                cursor.execute("DELETE FROM telefono WHERE id_cliente = %s", [encontrarRUT[0]]) 
+                                cursor.execute("DELETE FROM cliente WHERE id = %s", [encontrarRUT[0]])
                                 self.conexion.commit()
                                 print("Cliente eliminado exitosamente")
                             else:
@@ -193,12 +184,11 @@ class Cliente(Conexion):
                 cursor = self.conexion.cursor()
                 rut = fun.leerRut()
                 cliente = self.buscarCliente(rut)
-                if cliente is None:
-                    print(cliente)
+                if cliente:
                     print("----------------------------------------------------------------------------------------------")
                     print(f" ID: {cliente[0]} | RUT: {cliente[1]} | NOMBRE: {cliente[2]} | PAIS: {cliente[3]}")
                     print("----------------------------------------------------------------------------------------------")
-                    return
+
                 query_llamadas = """
                     SELECT id, numero, duracion, fecha
                     FROM telefono
