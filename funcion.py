@@ -6,7 +6,7 @@ def menu():
         "opcion: "))
 
 def submenu():
-    return int(input("\n********** PHYTONCELL **********\n"
+    return int(input("\n************** PHYTONCELL **************\n"
             "1. Agregar cliente o registro de llamada\n"
             "2. Eliminar cliente o registro de llamada\n"
             "3. Actualizar Datos\n"

@@ -47,29 +47,34 @@ class Cliente(Conexion):
     def eliminarCliente(self): #Aun faltan condiciones
             if self.conexion.is_connected():
                 try:
-                    opc = fun.subMenu1()
-                    cursor = self.conexion.cursor() 
-                    match opc:
-                        case 1:
-                            rut=fun.leerRut()
-                            encontrarRUT = self.buscarCliente(rut)
-                            if encontrarRUT is not None:
-                                cursor.execute("DELETE FROM telefono WHERE id_cliente = %s", [encontrarRUT[0]]) 
-                                cursor.execute("DELETE FROM cliente WHERE id = %s", [encontrarRUT[0]])
-                                self.conexion.commit()
-                                print("Cliente eliminado exitosamente")
-                            else:
-                                print("Cliente no existe en la base de datos")
-                                
-                        case 2:
-                            idTelf = input("Ingrese el ID: ")
-                            encontrarID = self.buscarID(idTelf)
-                            if encontrarID is not None:
-                                cursor.execute("DELETE FROM telefono WHERE id = %s", [idTelf])
-                                self.conexion.commit()
-                                print("Numero eliminado correctamente")
-                            else:
-                                print("No se encuentra ese id en la base de datos")
+                    while True:
+                        opc = fun.subMenu1()
+                        cursor = self.conexion.cursor() 
+                        match opc:
+                            case 1:
+                                print("")
+                                rut=fun.leerRut()
+                                encontrarRUT = self.buscarCliente(rut)
+                                if encontrarRUT is not None:
+                                    cursor.execute("DELETE FROM telefono WHERE id_cliente = %s", [encontrarRUT[0]]) 
+                                    cursor.execute("DELETE FROM cliente WHERE id = %s", [encontrarRUT[0]])
+                                    self.conexion.commit()
+                                    print("Cliente eliminado exitosamente")
+                                else:
+                                    print("Cliente no existe en la base de datos")
+                                    
+                            case 2:
+                                print("")
+                                idTelf = input("Ingrese el ID: ")
+                                encontrarID = self.buscarID(idTelf)
+                                if encontrarID is not None:
+                                    cursor.execute("DELETE FROM telefono WHERE id = %s", [idTelf])
+                                    self.conexion.commit()
+                                    print("Numero eliminado correctamente")
+                                else:
+                                    print("No se encuentra ese id en la base de datos")
+                            case 3:
+                                break
 
                 except Error as ex:
                     print("Error de conexión: {0} ".format(ex))
