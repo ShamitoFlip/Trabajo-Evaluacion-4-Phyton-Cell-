@@ -11,6 +11,7 @@ class Cliente(Conexion):
         try:
             if  self.conexion.is_connected():
                 cursor = self.conexion.cursor()
+                print("")
                 rut = fun.leerRut() 
                 buscarCliente = self.buscarCliente(rut) #(1,rut,nombre,pais) 
                 if  buscarCliente is not None: #reparar unread found
@@ -76,40 +77,80 @@ class Cliente(Conexion):
     def modificarDatos(self): 
             if self.conexion.is_connected():
                 try: 
-                    opc = fun.subMenu1()
                     cursor = self.conexion.cursor()
-                    match opc:
-                        case 1:
-                            idCliente = self.buscarCliente(fun.leerRut())
-                            mod = fun.subMenu3(opc)
-                            match mod:  
-                                case 1: 
-                                    listaNom = [fun.nuevoDato(mod,opc),idCliente[0]]
-                                    cursor.execute("UPDATE cliente SET nombre = %s WHERE id= %s", listaNom)
-                                case 2:
-                                    listaPai = [fun.nuevoDato(mod,opc),idCliente[0]]
-                                    cursor.execute("UPDATE cliente SET pais = %s WHERE id= %s", listaPai)
-                        case 2:
-                            idCliente = self.buscarCliente(fun.leerRut())
-                            mod = fun.subMenu3(opc)
-                            match mod:
-                                case 1:
-                                    listNum = [fun.nuevoDato(mod,opc),idCliente[0]]
-                                    cursor.execute("UPDATE telefono SET numero = %s where id = %s", listNum)
-                                case 2:
-                                    listaDur = [fun.nuevoDato(mod,opc),idCliente[0]]
-                                    cursor.execute("UPDATE telefono SET duracion = %s where id = %s", listaDur)
-                                case 3:
-                                    listaFech = [fun.nuevoDato(mod,opc),idCliente[0]]
-                                    cursor.execute("UPDATE telefono SET fecha = %s where id = %s", listaFech)
-                                case 4:
-                                    listaIdFk = [fun.nuevoDato(mod,opc),idCliente[0]]
-                                    cursor.execute("UPDATE telefono SET id_cliente = %s where id = %s", listaIdFk)
-
-
-
-                    self.conexion.commit()
-                    print("Los datos del cliente se han actualizado correctamente")
+                    while True:
+                        opc = fun.subMenu1()
+                        match opc:
+                            case 1:
+                                while True:
+                                    mod = fun.subMenu3(opc)
+                                    match mod:
+                                        case 1:
+                                            print("\nINGRESAR RUT AL QUE DESEA MODIFICAR LOS DATOS")
+                                            cliente = self.buscarCliente(fun.leerRut())
+                                            print("-------------------------------------------------------")
+                                            if cliente:
+                                                listaNom = [fun.nuevoDato(mod,opc),cliente[0]]
+                                                cursor.execute("UPDATE cliente SET nombre = %s WHERE id= %s", listaNom)
+                                                self.conexion.commit()
+                                                print("Los datos del cliente se han actualizado correctamente")
+                                            else:
+                                                print("EL CLIENTE NO SE ENCUENTRA REGISTRADO")
+                                        case 2:
+                                            print("\nINGRESAR RUT AL QUE DESEA MODIFICAR LOS DATOS")
+                                            cliente = self.buscarCliente(fun.leerRut())
+                                            print("-------------------------------------------------------")
+                                            if cliente:
+                                                listaPai = [fun.nuevoDato(mod,opc),cliente[0]]
+                                                cursor.execute("UPDATE cliente SET pais = %s WHERE id= %s", listaPai)
+                                                self.conexion.commit()
+                                                print("Los datos del cliente se han actualizado correctamente")
+                                            else:
+                                                print("EL CLIENTE NO SE ENCUENTRA REGISTRADO")
+                                        case 3:
+                                            break
+                            case 2:
+                                while True:
+                                    mod = fun.subMenu3(opc)
+                                    match mod:
+                                        case 1:
+                                            print("\nINGRESAR RUT AL QUE DESEA MODIFICAR LOS DATOS")
+                                            cliente = self.buscarCliente(fun.leerRut())
+                                            print("-------------------------------------------------------")
+                                            if cliente:
+                                                listNum = [fun.nuevoDato(mod,opc),cliente[0]]
+                                                cursor.execute("UPDATE telefono SET numero = %s where id = %s", listNum)
+                                                self.conexion.commit()
+                                                print("Los datos del cliente se han actualizado correctamente")
+                                            else:
+                                                print("EL CLIENTE NO SE ENCUENTRA REGISTRADO")
+                                        case 2:
+                                            print("\nINGRESAR RUT AL QUE DESEA MODIFICAR LOS DATOS")
+                                            cliente = self.buscarCliente(fun.leerRut())
+                                            print("-------------------------------------------------------")
+                                            if cliente:
+                                                listaDur = [fun.nuevoDato(mod,opc),cliente[0]]
+                                                cursor.execute("UPDATE telefono SET duracion = %s where id = %s", listaDur)
+                                                self.conexion.commit()
+                                                print("Los datos del cliente se han actualizado correctamente")
+                                            else:
+                                                print("EL CLIENTE NO SE ENCUENTRA REGISTRADO")
+                                        case 3:
+                                            print("\nINGRESAR RUT AL QUE DESEA MODIFICAR LOS DATOS")
+                                            cliente = self.buscarCliente(fun.leerRut())
+                                            print("-------------------------------------------------------")
+                                            if cliente:
+                                                listaFech = [fun.nuevoDato(mod,opc),cliente[0]]
+                                                cursor.execute("UPDATE telefono SET fecha = %s where id = %s", listaFech)
+                                                self.conexion.commit()
+                                                print("Los datos del cliente se han actualizado correctamente")
+                                            else:
+                                                print("EL CLIENTE NO SE ENCUENTRA REGISTRADO")
+                                        case 4:
+                                            break
+                            case 3:
+                                break
+                    
                     
 
                 except Error as ex:
@@ -188,7 +229,9 @@ class Cliente(Conexion):
                     print("----------------------------------------------------------------------------------------------")
                     print(f" ID: {cliente[0]} | RUT: {cliente[1]} | NOMBRE: {cliente[2]} | PAIS: {cliente[3]}")
                     print("----------------------------------------------------------------------------------------------")
-
+                else:
+                    print("\n No hay registro del cliente en la base de datos. Porfavor agregelo seleccionando el numero 1 en el menu ")
+                    return
                 query_llamadas = """
                     SELECT id, numero, duracion, fecha
                     FROM telefono
@@ -201,7 +244,7 @@ class Cliente(Conexion):
                     for llamada in llamadas:
                         print(f" - ID: {llamada[0]} | NUMERO: {llamada[1]} | DURACION: {llamada[2]} MIN | FECHA: {llamada[3]}")
                 else:
-                    print("\n No hay registro de llamadas para este cliente. ")
+                    print("\n No hay registro de llamada en la base de datos ")
 
             else:
                 print("No se pudo conectar a la base de datos. ")
@@ -267,10 +310,10 @@ class Cliente(Conexion):
                     cursor=self.conexion.cursor()
                     rut = fun.leerRut()
                     buscarCliente = self.buscarCliente(rut)
-                    idCliente = [buscarCliente[0]]
+                    
                     if  buscarCliente is not None: #reparar unread data
                         print("")  
-
+                        idCliente = [buscarCliente[0]]
                         cursor.execute("SELECT tf.id, tf.numero,tf.duracion,tf.fecha,tf.id_cliente FROM telefono AS tf INNER JOIN cliente AS cl ON tf.id_cliente = cl.id WHERE tf.id_cliente = %s  ORDER BY tf.id",idCliente)
                         resultado = cursor.fetchall()
                         count=0

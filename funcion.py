@@ -17,10 +17,10 @@ def submenu():
             "opcion: "))
 
 def subMenu1():
-    return int(input("***** ELEGIR UNA OPCION *****\n"
+    return int(input("\n***** ELEGIR UNA OPCION *****\n"
         "1. Cliente \n"
         "2. Registro de llamadas\n"
-        "3. Devolver"
+        "3. Devolver\n"
         "opcion: "))
 
 def subMenu2():
@@ -28,21 +28,22 @@ def subMenu2():
         "1. Cliente \n"
         "2. Registro de llamadas\n"
         "3. Mostrar ambos\n"
-        "4. Devolver"
+        "4. Devolver\n"
         "opcion: "))
 
 def subMenu3(opc):
     if opc == 1:
-        return int(input("***** ACTUALIZAR *****\n"
+        return int(input("\n***** ACTUALIZAR *****\n"
             "1. Modificar Nombre\n"
             "2. Modificar Pais\n"
+            "3. devolver\n"
             "opcion: "))
     elif opc == 2:
-        return int(input("***** ACTUALIZAR *****\n"
+        return int(input("\n***** ACTUALIZAR *****\n"
             "1. Modificar Numero de telefono\n"
             "2. Modificar Duracion\n"
             "3. Modificar Fecha\n"
-            "4. Modificar Id Foreign Key\n"
+            "4. devolver\n"
             "opcion: "))
 
 def menuConsulta():
@@ -52,6 +53,7 @@ def menuConsulta():
         "3. Total de minutos de llamada por cliente\n"
         "4. Devolver\n"
         "opcion: "))
+
 #FUNCIONES PARA EL CRUD
 def datosCliente():
     while True:
@@ -247,7 +249,7 @@ def nuevoDato(mod,opc):
 
 def leerRut():
     while True:
-        rut = validacionRut(input("\nIngrese RUT(XXXXXXXX-X): ").upper())
+        rut = validacionRut(input("Ingrese RUT(XXXXXXXX-X): ").upper())
         if  rut != None:
             break
     return rut
@@ -285,8 +287,8 @@ def validacionRut(rut):
             else:
                 print("Falta el guion o no se encuentra en la posicion correcta")
 
-        elif len(rut) == 9:#Validar el largo del rut
-            if rut.find("-") == 7:#Validadr posicion del guion
+        elif len(rut) == 9:
+            if rut.find("-") == 7:
                 if rut.find("K") == 8:
                     if digitoVerificadorRut(listaRut):
                         return rut
@@ -355,7 +357,7 @@ def switchClient(num):
     else:
         return "Clientes"
 #ART ASCII
-def fin():                                                                                                                                                                                                            
+def fin():
     print(".-----------------.      ------.       .--------             .-----:")     
     print("+@@@@@@@@@@@@@@@@@-      @@@@@@=       +@@@@@@@@%.           =@@@@@*")    
     print("+@@@@@@@@@@@@@@@@@-      @@@@@@=       +@@@@@@@@@%           =@@@@@*")     
