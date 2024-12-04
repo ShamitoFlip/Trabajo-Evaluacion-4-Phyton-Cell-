@@ -25,7 +25,7 @@ while True:
                                 case 2:
                                     cl.leerPais()                                
                                 case 3:
-                                    pass
+                                    cl.sumaMinutos()
                                 case 4:
                                     break
                     case 8:

@@ -308,7 +308,7 @@ class Cliente(Conexion):
             return True
 
 #CONSULTAS
-    def buscarLlamadas(self): #Error UNREAD RESULT FOUND
+    def buscarLlamadas(self): #Consulta 1
         if self.conexion.is_connected():
             try:
                 while True:
@@ -353,7 +353,6 @@ class Cliente(Conexion):
                 print("Error de conexión: {0} ".format(ex))
     
     def leerPais(self):#Consulta 2 
-        
         try:
             if self.conexion.is_connected():
                 cursor = self.conexion.cursor()
@@ -388,4 +387,57 @@ class Cliente(Conexion):
                 print("Error de conexión: {0} ".format(ex))
     
     def sumaMinutos(self):#Consulta 3
+        listaNombres= []
+        suma=0
+        try:
+            if self.conexion.is_connected():
+                cursor = self.conexion.cursor()
+                fecha = fun.fecha()
+
+                cursor.execute("SELECT cl.id, cl.nombre FROM telefono as tf INNER JOIN cliente as cl ON cl.id = tf.id_cliente WHERE tf.fecha = %s",fecha)
+                resultado=cursor.fetchall()
+
+                cursor.execute("SELECT duracion, fecha, id_cliente FROM telefono WHERE fecha=%s",fecha) 
+                resultado2=cursor.fetchall()
+
+                if resultado:
+                        print("\n----------------------------------------------------------------------------------------------------------------------------")
+                        print("CLIENTE Y REGISTROS DE LLAMADA (SUMA DEL TOTAL DE MINUTOS LLAMADOS):")
+                        print("----------------------------------------------------------------------------------------------------------------------------")
+                        c=1
+                        for fila in resultado:
+                            if fila not in listaNombres:
+                                listaNombres.append(fila)
+
+                        for fila1 in resultado2:
+                            suma+=fila1[0]
+                        
+                        
+                        for fila2 in listaNombres:
+                            print(f"{c}.","ID:",fila2[0]," |NOMBRE:",fila2[1])
+                            suma2 = 0
+                            for item in resultado2:
+                                if fila2[0] == item[2]:
+                                    print("\t-","|MINUTOS DE LLAMADA:",item[0],"min","|FECHA:",item[1])
+                                    suma2+=item[0]
+                            print("-----------------------------------------------------------------------------------------------------------------------------")
+                            print(f"Total minutos llamados por el cliente {fila2[1]}: ",suma2, "min")
+                            print("-----------------------------------------------------------------------------------------------------------------------------")
+
+                            c+=1        
+                        print("-----------------------------------------------------------------------------------------------------------------------------")
+                        print("Total registros de llamada leídos:",cursor.rowcount)
+                        print(f"Suma total de minutos de llamada: {suma} min")
+                        print("-----------------------------------------------------------------------------------------------------------------------------")
+                        cursor.close()      
+
+                            
+
+
+                else:
+                    print("\nNo existe registro con la fecha seleccionada")
+        except Error as ex:
+                print("Error de conexión: {0} ".format(ex))
+
+    def consultaExtra(self): #Consulta 4
         pass
